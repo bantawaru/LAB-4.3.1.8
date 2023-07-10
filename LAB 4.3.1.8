@@ -1,0 +1,62 @@
+# Defines the 'is_year_leap' function
+def is_year_leap(year):
+	# if the year number isn't divisible by four, it's a common year;
+	if year % 4:
+		return False
+	# if the year number isn't divisible by 100, it's a leap year;
+	elif year % 100:
+		return True
+	# if the year number isn't divisible by 400, it's a common year;
+	elif year % 400:
+		return False
+	# Otherwise, it's a leap year.
+	else:
+		return True
+
+# Defines the 'days_in_month' function
+def days_in_month(year, month):
+	# if the year or month is out of scope return None.
+	if (year < 1582) or (month < 1) or (month > 12):
+		return None
+	# Total days of each month in chronological order.
+	#months[ja, fe, ma, ap, ma, ju, ju, au, se, oc, no, de]
+	# elem [ 0,  1,  2,  3,  4,  5,  6,  7,  8,  9, 10, 11]
+	days = [31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31]
+	# Leap year + Febuary = 29 days:
+	result = days[month -1]
+	if month == 2 and is_year_leap(year):
+		result = 29
+	return result
+
+# Defines the 'days_in_year' function
+def day_of_year(year, month, day):
+	totalDays = days_in_month(year, month)
+	days = 0
+	# Calculates days in a month ;; None must be defined first in the range to allow for incrementation, ex: 0 += 1, etc...
+	for period in range(1, month): 
+		totalDays = days_in_month(year, period)
+		if totalDays == None:
+			return None
+		# Calculates days in a month into a year.
+		days += totalDays
+		totalDays = days_in_month(year, month)
+	# Ensures months in a year is within scope
+	if (month < 1) or (month > 12):
+		return None
+	# Ensures days in a month is within scope
+	if (day >= 1) and (day <= totalDays):
+		return days + day
+	else:
+		return None
+
+# Test data
+print("Days in the year so far for 2000, 12, 31 = ", end="")
+print(day_of_year(2000, 12, 31))
+print("Days in the year so far for 2016, 02, 29 = ", end="")
+print(day_of_year(2016, 2, 29))
+print("Days in the year so far for 1581, 11, 20 = ", end="") # Year is out of scope so returns 'None'
+print(day_of_year(1581, 11, 20))
+print("Days in the year so far for 1985, 13, 31 = ", end="") # Month is out of scope so returns 'None'
+print(day_of_year(1985, 13, 31))
+print("Days in the year so far for 2022, 02, 29 = ", end="") # Day is out of scope so returns 'None'
+print(day_of_year(2022, 2, 29))
